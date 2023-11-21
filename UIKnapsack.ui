@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>UIKnapsack</class>
+ <widget class="QMainWindow" name="UIKnapsack">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>849</width>
+    <height>610</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Knapsack using Genetic Algorithm</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background: white</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QGroupBox" name="grSelection">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>100</y>
+      <width>531</width>
+      <height>271</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Segoe UI</family>
+      <pointsize>14</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="cursor">
+     <cursorShape>ArrowCursor</cursorShape>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QGroupBox#grSelection {
+    border: 1px solid gray;
+    border-radius: 10px;
+	background: white;
+	font-weight: bold;
+}
+</string>
+    </property>
+    <property name="title">
+     <string>Step 1: Choose your expression</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignHCenter|Qt::AlignTop</set>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+    <widget class="QRadioButton" name="rdAuto">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>60</y>
+       <width>231</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>12</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="text">
+      <string>Auto Generate Items</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="rdCustomize">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>110</y>
+       <width>201</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>12</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>Customize Items</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>17</width>
+       <height>17</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btnNextStep2">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>180</y>
+       <width>131</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton#btnNextStep2 {
+border: 1px solid #FF6B81;
+border-radius: 10px;
+background: #FF6B81;
+color: white;
+font-weight: bold;
+}
+
+QPushButton#btnNextStep2:hover {
+    border: 1px solid #FF6B81; 
+    background: white;
+    color: #FF6B81; 
+}
+QPushButton#btnNextStep2:pressed {
+    background: #FF6B81;
+    color: white; 
+}</string>
+     </property>
+     <property name="text">
+      <string>Next</string>
+     </property>
+     <property name="default">
+      <bool>false</bool>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="grCreateItemsAuto">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>30</y>
+      <width>621</width>
+      <height>491</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Segoe UI</family>
+      <pointsize>14</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="cursor">
+     <cursorShape>ArrowCursor</cursorShape>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="title">
+     <string>Step 3: Create Items</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignHCenter|Qt::AlignTop</set>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+    <widget class="QPushButton" name="btnNextStep4">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>410</y>
+       <width>131</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton#btnNextStep4 {
+border: 1px solid #FF6B81;
+border-radius: 10px;
+background: #FF6B81;
+color: white;
+font-weight: bold;
+}
+
+QPushButton#btnNextStep4:hover {
+    border: 1px solid #FF6B81; 
+    background: white;
+    color: #FF6B81; 
+}
+QPushButton#btnNextStep4:pressed {
+    background: #FF6B81;
+    color: white; 
+}</string>
+     </property>
+     <property name="text">
+      <string>Next</string>
+     </property>
+     <property name="default">
+      <bool>false</bool>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btnBackStep2">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>410</y>
+       <width>131</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton#btnBackStep2 {
+border: 1px solid #D9D9D9;
+border-radius: 10px;
+background: #D9D9D9;
+color: black;
+font-weight: bold;
+}
+
+QPushButton#btnBackStep2:hover {
+    border: 1px solid #FF6B81; 
+    background: black;
+    color: #FF6B81; 
+}
+QPushButton#btnBackStep2:pressed {
+    background: #FF6B81;
+    color: black; 
+}</string>
+     </property>
+     <property name="text">
+      <string>Back</string>
+     </property>
+     <property name="default">
+      <bool>false</bool>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QListView" name="listItem">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>50</y>
+       <width>511</width>
+       <height>331</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="grNumberItems">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>80</y>
+      <width>551</width>
+      <height>301</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Segoe UI</family>
+      <pointsize>14</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="cursor">
+     <cursorShape>ArrowCursor</cursorShape>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QGroupBox#grNumberItems {
+    border: 1px solid gray;
+    border-radius: 10px;
+	background: white;
+	font-weight: bold;
+}
+</string>
+    </property>
+    <property name="title">
+     <string>Step 2: Enter the item quantity</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignHCenter|Qt::AlignTop</set>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+    <widget class="QPushButton" name="btnNextStep3">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>190</y>
+       <width>131</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton#btnNextStep3 {
+border: 1px solid #FF6B81;
+border-radius: 10px;
+background: #FF6B81;
+color: white;
+font-weight: bold;
+}
+
+QPushButton#btnNextStep3:hover {
+    border: 1px solid #FF6B81; 
+    background: white;
+    color: #FF6B81; 
+}
+QPushButton#btnNextStep3:pressed {
+    background: #FF6B81;
+    color: white; 
+}</string>
+     </property>
+     <property name="text">
+      <string>Next</string>
+     </property>
+     <property name="default">
+      <bool>false</bool>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btnBackStep1">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>190</y>
+       <width>131</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton#btnBackStep1 {
+border: 1px solid #D9D9D9;
+border-radius: 10px;
+background: #D9D9D9;
+color: black;
+font-weight: bold;
+}
+
+QPushButton#btnBackStep1:hover {
+    border: 1px solid #FF6B81; 
+    background: black;
+    color: #FF6B81; 
+}
+QPushButton#btnBackStep1:pressed {
+    background: #FF6B81;
+    color: black; 
+}</string>
+     </property>
+     <property name="text">
+      <string>Back</string>
+     </property>
+     <property name="default">
+      <bool>false</bool>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="spinQuantity">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>90</y>
+       <width>131</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+    </widget>
+   </widget>
+   <zorder>grNumberItems</zorder>
+   <zorder>grSelection</zorder>
+   <zorder>grCreateItemsAuto</zorder>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>849</width>
+     <height>26</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
