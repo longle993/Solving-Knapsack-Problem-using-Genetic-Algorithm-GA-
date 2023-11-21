@@ -62,7 +62,7 @@ class Algorithm:
                 total_Weight += list_Items[item]["weight"]
         
         if total_Weight > max_weight: 
-            fitness = 0
+            fitness = -1
         else: 
             fitness = total_Value
             
@@ -91,3 +91,42 @@ class Algorithm:
                     selected_individuals.append(populations[i])
                     break
         return selected_individuals
+    
+    def single_PointCrossover(self, parent1, parent2):
+        crossover_point = random.randint(1, len(parent1) - 1)  # Chọn điểm cắt ngẫu nhiên
+        child1 = parent1[:crossover_point] + parent2[crossover_point:]  # Tạo con 1 từ gen của cha mẹ
+        child2 = parent2[:crossover_point] + parent1[crossover_point:]  # Tạo con 2 từ gen của cha mẹ
+        return child1, child2
+
+    def crossover_Population(self, selected_Individuals, crossover_rate):
+        num_parents = len(selected_Individuals)
+        num_offsprings = int(crossover_rate * num_parents)
+        offspring_population = []
+
+        for _ in range(num_offsprings // 2):
+            parent1 = random.choice(selected_Individuals)  # Chọn ngẫu nhiên cha mẹ 1
+            parent2 = random.choice(selected_Individuals)  # Chọn ngẫu nhiên cha mẹ 2
+            child1, child2 = self.single_PointCrossover(parent1, parent2)  # Lai ghép
+            offspring_population.extend([child1, child2])  # Thêm con vào quần thể con
+        return offspring_population
+    
+    def mutate_Population(self,offspring_Populations,mutation_rate):
+        mutated_Individuals = []
+        for individual in offspring_Populations:
+            copy_individual = list(individual)
+            for i in range(len(copy_individual)):
+                if random.random() < mutation_rate:
+                    copy_individual[i] = 1 if copy_individual[i] == 0 else 0
+            mutated_Individuals.append(copy_individual)
+        return mutated_Individuals
+    
+    def print_BestSolution(self, best_solution,list_Items, max_weight):
+        best_items = [item for index, item in enumerate(list_Items) if best_solution[index] == 1]
+        total_weight = 0
+        print("Items Selected in the Best Solution:")
+        for item in best_items:
+            total_weight += list_Items[item]['weight']
+            print(f"{item}: weight={list_Items[item]['weight']}, value={list_Items[item]['value']}")
+        print("Total Value:", self.evaluate_Fitness(list_Items, best_solution, max_weight))
+        print("Total Weight:",total_weight)
+        
