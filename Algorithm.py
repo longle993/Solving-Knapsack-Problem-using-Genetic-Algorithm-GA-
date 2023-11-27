@@ -120,13 +120,30 @@ class Algorithm:
             mutated_Individuals.append(copy_individual)
         return mutated_Individuals
     
-    def print_BestSolution(self, best_solution,list_Items, max_weight):
+    def print_BestSolution(self, best_solution, list_Items, max_weight):
         best_items = [item for index, item in enumerate(list_Items) if best_solution[index] == 1]
         total_weight = 0
+        result = {
+            'ItemsSelected': [],
+            'TotalValue': None,
+            'TotalWeight': None
+        }
         print("Items Selected in the Best Solution:")
         for item in best_items:
+            item_info = {
+                'Item': item,
+                'Weight': list_Items[item]['weight'],
+                'Value': list_Items[item]['value']
+            }
+            result['ItemsSelected'].append(item_info)
             total_weight += list_Items[item]['weight']
             print(f"{item}: weight={list_Items[item]['weight']}, value={list_Items[item]['value']}")
-        print("Total Value:", self.evaluate_Fitness(list_Items, best_solution, max_weight))
-        print("Total Weight:",total_weight)
+        
+        result['TotalValue'] = self.evaluate_Fitness(list_Items, best_solution, max_weight)
+        result['TotalWeight'] = total_weight
+
+        print("Total Value:", result['TotalValue'])
+        print("Total Weight:", result['TotalWeight'])
+        return result
+        
         

@@ -7,14 +7,22 @@
 
 
 from PyQt6 import QtCore, QtGui, QtWidgets
-
-autoGenerate = False
+from Items import Ui_Items
+from result import Ui_Result
+from Algorithm import Algorithm
 quantity = 0
+max_weight = 12 
+
 class Ui_UIKnapsack(object):
+    def __init__(self):
+            self.autoGenerate = False
+            self.listItems = []
+            self.algorithm = None
+
     def setSelection(self):
         if(self.rdAuto.isChecked() == True or self.rdCustomize.isChecked() == True):
             if(self.rdAuto.isChecked() == True):
-                autoGenerate = True
+                self.autoGenerate = True
                 self.grNumberItems.setVisible(True)
                 self.grSelection.setVisible(False)
         else:
@@ -28,6 +36,7 @@ class Ui_UIKnapsack(object):
         if(quantity > 0):
             self.grNumberItems.setVisible(False)
             self.grCreateItemsAuto.setVisible(True)
+            self.addItems(quantity)
         else:
                 msg_box = QtWidgets.QMessageBox()
                 msg_box.setIcon(QtWidgets.QMessageBox.Icon.Information)
@@ -40,6 +49,116 @@ class Ui_UIKnapsack(object):
     def backToStep2(self):
         self.grNumberItems.setVisible(True)
         self.grCreateItemsAuto.setVisible(False)
+    def addItems(self, quantity):
+        try:
+                self.listItems.clear()
+                if(self.autoGenerate == True):
+                        #GenerateData
+                        self.algorithm= algorithms = Algorithm(Algorithm.generateItem(quantity), Algorithm.generate_Value(quantity), Algorithm.generate_Weight(quantity), quantity)
+                        
+                        self.list_Items = algorithms.combine_Dictionary()
+                        for item,data in self.list_Items.items():
+                                # Tạo một instance của Ui_Item
+                                newItem = Ui_Items()
+                                # Tạo một widget để chứa giao diện từ Ui_Item
+                                item_widget = QtWidgets.QWidget()
+                                newItem.setupUi(item_widget)
+                                # Tạo một item mới cho QListWidget và đặt widget tạo bởi Ui_Item làm nội dung của item
+                                listWidgetItem = QtWidgets.QListWidgetItem()
+                                listWidgetItem.setSizeHint(QtCore.QSize(534,113))  # Sử dụng sizeHint của widget
+                                self.listItems.addItem(listWidgetItem)
+                                self.listItems.setItemWidget(listWidgetItem, item_widget)
+                                # Thiết lập giá trị cho các thành phần trong Ui_Item
+                                # Ví dụ: Thiết lập giá trị cho SpinBox và TextEdit
+                                item_widget.findChild(QtWidgets.QSpinBox, "spinWeight").setValue(data['weight'])  
+                                item_widget.findChild(QtWidgets.QSpinBox, "spinValue").setValue(data['value'])   
+                                item_widget.findChild(QtWidgets.QTextEdit, "textEdit").setPlainText(item)
+                else:
+                        for i in range(quantity):
+                                # Tạo một instance của Ui_Item
+                                newItem = Ui_Items()
+                                # Tạo một widget để chứa giao diện từ Ui_Item
+                                item_widget = QtWidgets.QWidget()
+                                newItem.setupUi(item_widget)
+                                # Tạo một item mới cho QListWidget và đặt widget tạo bởi Ui_Item làm nội dung của item
+                                listWidgetItem = QtWidgets.QListWidgetItem()
+                                listWidgetItem.setSizeHint(QtCore.QSize(200,70))  # Sử dụng sizeHint của widget
+                                self.listItems.addItem(listWidgetItem)
+                                self.listItems.setItemWidget(listWidgetItem, item_widget)
+                                # Thiết lập giá trị cho các thành phần trong Ui_Item
+                                # Ví dụ: Thiết lập giá trị cho SpinBox và TextEdit
+                                item_widget.findChild(QtWidgets.QSpinBox, "spinWeight").setValue(1)  
+                                item_widget.findChild(QtWidgets.QSpinBox, "spinValue").setValue(1)   
+                                item_widget.findChild(QtWidgets.QTextEdit, "textEdit").setPlainText("Item Name")
+        except Exception as e:
+                print(e)  
+    def solveProblem(self):
+        self.groupBox.setVisible(True)
+        try:  
+                # Setup
+                crossover_rate = 0.9
+                mutation_rate = 0.1
+                
+                print("List Items:")
+                print(self.list_Items)
+
+                # Step 2: Tạo quần thể
+                size_population = 20 
+                populations = self.algorithm.create_population(size_population)
+                print("\nCreate Populations:")
+                print(populations)
+
+                # Step 7: Lặp lại quá trình và chọn cá thể tốt nhất
+                num_generations = 10 
+                best_solution = None 
+
+                for generation in range(num_generations):
+                        fitness_score = self.algorithm.evaluate_Population(self.list_Items, populations, max_weight)
+                        probabilities = self.algorithm.calculate_Probabilities(fitness_score)
+                        selected_individuals = self.algorithm.roulette_wheel_selection(populations, probabilities)
+                        offspring_population = self.algorithm.crossover_Population(selected_individuals, crossover_rate)
+                        mutation_Populations = self.algorithm.mutate_Population(offspring_population, mutation_rate)
+                        
+                        # Kiểm tra nếu danh sách đột biến không rỗng trước khi chọn cá thể tốt nhất
+                        if mutation_Populations:
+                                best_individual = max(mutation_Populations, key=lambda x: self.algorithm.evaluate_Fitness(self.list_Items, x, max_weight))
+                                
+                                if best_solution is None or self.algorithm.evaluate_Fitness(self.list_Items, best_individual, max_weight) > self.algorithm.evaluate_Fitness(self.list_Items, best_solution, max_weight):
+                                        best_solution = best_individual
+                        else:
+                                print("\nNo valid individuals after mutation.")
+
+                        # Gán quần thể mới từ quần thể sau khi đột biến
+                        populations = mutation_Populations
+
+                # In ra cá thể tốt nhất cuối cùng
+                print("\nBest Solution found:")
+                self.algorithm.print_BestSolution(best_solution,self.list_Items,max_weight)
+                result = self.algorithm.print_BestSolution(best_solution,self.list_Items,max_weight)
+                
+                item_info = result['ItemsSelected']
+                for data in item_info:  # Lặp qua các giá trị trong từ điển
+                        # Tạo một instance của Ui_Result
+                        newResult = Ui_Result()
+                        # Tạo một widget để chứa giao diện từ Ui_Result
+                        result_widget = QtWidgets.QWidget()
+                        newResult.setupUi(result_widget)
+                        
+                        # Các bước còn lại để thiết lập giá trị cho các QLabel
+                        result_widget.findChild(QtWidgets.QLabel, "lblItemName").setText(data['Item'])
+                        result_widget.findChild(QtWidgets.QLabel, "lblWeight").setText(str(data['Weight']))
+                        result_widget.findChild(QtWidgets.QLabel, "lblValue").setText(str(data['Value']))
+
+                        # Thêm widget vào QListWidget
+                        listWidgetItem = QtWidgets.QListWidgetItem()
+                        listWidgetItem.setSizeHint(QtCore.QSize(534, 113))
+                        self.listResult.addItem(listWidgetItem)
+                        self.listResult.setItemWidget(listWidgetItem, result_widget)
+        
+        except Exception as e:
+                print(e)
+    def completeProblem(self):
+            self.groupBox.setVisible(False)                  
     def setupUi(self, UIKnapsack):
         UIKnapsack.setObjectName("UIKnapsack")
         UIKnapsack.resize(849, 610)
@@ -120,7 +239,6 @@ class Ui_UIKnapsack(object):
         self.btnNextStep2.setObjectName("btnNextStep2")
         self.grCreateItemsAuto = QtWidgets.QGroupBox(parent=self.centralwidget)
         self.grCreateItemsAuto.setGeometry(QtCore.QRect(120, 30, 621, 491))
-        self.grCreateItemsAuto.setVisible(False)
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(14)
@@ -135,6 +253,7 @@ class Ui_UIKnapsack(object):
         self.grCreateItemsAuto.setObjectName("grCreateItemsAuto")
         self.btnNextStep4 = QtWidgets.QPushButton(parent=self.grCreateItemsAuto)
         self.btnNextStep4.setGeometry(QtCore.QRect(330, 410, 131, 51))
+        self.btnNextStep4.clicked.connect(self.solveProblem)
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(12)
@@ -164,6 +283,7 @@ class Ui_UIKnapsack(object):
         self.btnNextStep4.setObjectName("btnNextStep4")
         self.btnBackStep2 = QtWidgets.QPushButton(parent=self.grCreateItemsAuto)
         self.btnBackStep2.setGeometry(QtCore.QRect(170, 410, 131, 51))
+        self.btnBackStep2.clicked.connect(self.backToStep2)
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(12)
@@ -191,16 +311,56 @@ class Ui_UIKnapsack(object):
         self.btnBackStep2.setDefault(False)
         self.btnBackStep2.setFlat(False)
         self.btnBackStep2.setObjectName("btnBackStep2")
-        self.btnBackStep2.clicked.connect(self.backToStep2)
-        self.listItem = QtWidgets.QListView(parent=self.grCreateItemsAuto)
-        self.listItem.setGeometry(QtCore.QRect(60, 50, 511, 331))
+        self.listItems = QtWidgets.QListWidget(parent=self.grCreateItemsAuto)
+        self.listItems.setGeometry(QtCore.QRect(30, 50, 561, 321))
+        self.listItems.setFrameShape(QtWidgets.QFrame.Shape.StyledPanel)
+        self.listItems.setObjectName("listItems")
+        self.groupBox = QtWidgets.QGroupBox(parent=self.grCreateItemsAuto)
+        self.groupBox.setGeometry(QtCore.QRect(0, 0, 621, 491))
         font = QtGui.QFont()
-        font.setPointSize(10)
-        self.listItem.setFont(font)
-        self.listItem.setObjectName("listItem")
+        font.setFamily("Segoe UI")
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        self.groupBox.setFont(font)
+        self.groupBox.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.groupBox.setObjectName("groupBox")
+        self.listResult = QtWidgets.QListWidget(parent=self.groupBox)
+        self.listResult.setGeometry(QtCore.QRect(40, 40, 561, 321))
+        self.listResult.setFrameShape(QtWidgets.QFrame.Shape.StyledPanel)
+        self.listResult.setObjectName("listResult")
+        self.btnFinish = QtWidgets.QPushButton(parent=self.groupBox)
+        self.btnFinish.setGeometry(QtCore.QRect(250, 410, 131, 51))
+        self.btnFinish.clicked.connect(self.completeProblem)
+        font = QtGui.QFont()
+        font.setFamily("Segoe UI")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.btnFinish.setFont(font)
+        self.btnFinish.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
+        self.btnFinish.setStyleSheet("QPushButton#btnFinish {\n"
+"border: 1px solid #FF6B81;\n"
+"border-radius: 10px;\n"
+"background: #FF6B81;\n"
+"color: white;\n"
+"font-weight: bold;\n"
+"}\n"
+"\n"
+"QPushButton#btnFinish:hover {\n"
+"    border: 1px solid #FF6B81; \n"
+"    background: white;\n"
+"    color: #FF6B81; \n"
+"}\n"
+"QPushButton#btnFinish:pressed {\n"
+"    background: #FF6B81;\n"
+"    color: white; \n"
+"}")
+        self.btnFinish.setDefault(False)
+        self.btnFinish.setFlat(False)
+        self.btnFinish.setObjectName("btnFinish")
         self.grNumberItems = QtWidgets.QGroupBox(parent=self.centralwidget)
         self.grNumberItems.setGeometry(QtCore.QRect(150, 80, 551, 301))
-        self.grNumberItems.setVisible(False)
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(14)
@@ -298,6 +458,10 @@ class Ui_UIKnapsack(object):
         self.statusbar.setObjectName("statusbar")
         UIKnapsack.setStatusBar(self.statusbar)
 
+        #hide groupbox
+        self.grNumberItems.setVisible(False)
+        self.grCreateItemsAuto.setVisible(False)
+        self.groupBox.setVisible(False)
         self.retranslateUi(UIKnapsack)
         QtCore.QMetaObject.connectSlotsByName(UIKnapsack)
 
@@ -311,6 +475,8 @@ class Ui_UIKnapsack(object):
         self.grCreateItemsAuto.setTitle(_translate("UIKnapsack", "Step 3: Create Items"))
         self.btnNextStep4.setText(_translate("UIKnapsack", "Next"))
         self.btnBackStep2.setText(_translate("UIKnapsack", "Back"))
+        self.groupBox.setTitle(_translate("UIKnapsack", "Step 4: Best Result"))
+        self.btnFinish.setText(_translate("UIKnapsack", "Finish"))
         self.grNumberItems.setTitle(_translate("UIKnapsack", "Step 2: Enter the item quantity"))
         self.btnNextStep3.setText(_translate("UIKnapsack", "Next"))
         self.btnBackStep1.setText(_translate("UIKnapsack", "Back"))
