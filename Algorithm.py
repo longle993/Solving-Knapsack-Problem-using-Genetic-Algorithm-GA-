@@ -68,6 +68,7 @@ class Algorithm:
             
         return fitness
 
+
     def evaluate_Population(self,listItems,populations, max_weight):
         fitness_score = []
         for individual in populations:

@@ -9,6 +9,7 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from Items import Ui_Items
 from result import Ui_Result
+from NotFound import Ui_NotFound
 from Algorithm import Algorithm
 quantity = 0
 max_weight = 12 
@@ -25,6 +26,11 @@ class Ui_UIKnapsack(object):
                 self.autoGenerate = True
                 self.grNumberItems.setVisible(True)
                 self.grSelection.setVisible(False)
+            elif (self.rdCustomize.isChecked() == True):
+                self.autoGenerate = False
+                self.grNumberItems.setVisible(True)
+                self.grSelection.setVisible(False)
+                                
         else:
                 msg_box = QtWidgets.QMessageBox()
                 msg_box.setIcon(QtWidgets.QMessageBox.Icon.Information)
@@ -33,14 +39,14 @@ class Ui_UIKnapsack(object):
                 msg_box.exec()
     def setQuantity(self):
         quantity = self.spinQuantity.value()
-        if(quantity > 0):
+        if(quantity > 1):
             self.grNumberItems.setVisible(False)
             self.grCreateItemsAuto.setVisible(True)
             self.addItems(quantity)
         else:
                 msg_box = QtWidgets.QMessageBox()
                 msg_box.setIcon(QtWidgets.QMessageBox.Icon.Information)
-                msg_box.setText("Your Quantity must be greater than 0")
+                msg_box.setText("Your Quantity must be greater than 1")
                 msg_box.setWindowTitle("Notice")
                 msg_box.exec()
     def backToStep1(self):
@@ -49,6 +55,24 @@ class Ui_UIKnapsack(object):
     def backToStep2(self):
         self.grNumberItems.setVisible(True)
         self.grCreateItemsAuto.setVisible(False)
+        
+    def getItemsFromListWidget(self):     
+        list_item_final = {}
+        list_item = []
+        for i in range(self.listItems.count()):
+                item_widget = self.listItems.itemWidget(self.listItems.item(i))
+
+                # Lấy thông tin từ các widget trong list widget
+                item_name = item_widget.findChild(QtWidgets.QTextEdit, "textEdit").toPlainText()
+                item_weight = item_widget.findChild(QtWidgets.QSpinBox, "spinWeight").value()
+                item_value = item_widget.findChild(QtWidgets.QSpinBox, "spinValue").value()
+
+                # Thêm thông tin vào từ điển với key là item_name
+                list_item_final[item_name] = {"weight": item_weight, "value": item_value}
+                list_item.append(item_name)
+        self.list_Items = list_item_final
+        return list_item   
+                        
     def addItems(self, quantity):
         try:
                 self.listItems.clear()
@@ -74,6 +98,7 @@ class Ui_UIKnapsack(object):
                                 item_widget.findChild(QtWidgets.QSpinBox, "spinValue").setValue(data['value'])   
                                 item_widget.findChild(QtWidgets.QTextEdit, "textEdit").setPlainText(item)
                 else:
+                        self.algorithm= algorithms = Algorithm(Algorithm.generateItem(quantity), Algorithm.generate_Value(quantity), Algorithm.generate_Weight(quantity), quantity)
                         for i in range(quantity):
                                 # Tạo một instance của Ui_Item
                                 newItem = Ui_Items()
@@ -82,18 +107,19 @@ class Ui_UIKnapsack(object):
                                 newItem.setupUi(item_widget)
                                 # Tạo một item mới cho QListWidget và đặt widget tạo bởi Ui_Item làm nội dung của item
                                 listWidgetItem = QtWidgets.QListWidgetItem()
-                                listWidgetItem.setSizeHint(QtCore.QSize(200,70))  # Sử dụng sizeHint của widget
+                                listWidgetItem.setSizeHint(QtCore.QSize(534,113))  # Sử dụng sizeHint của widget
                                 self.listItems.addItem(listWidgetItem)
                                 self.listItems.setItemWidget(listWidgetItem, item_widget)
                                 # Thiết lập giá trị cho các thành phần trong Ui_Item
                                 # Ví dụ: Thiết lập giá trị cho SpinBox và TextEdit
                                 item_widget.findChild(QtWidgets.QSpinBox, "spinWeight").setValue(1)  
                                 item_widget.findChild(QtWidgets.QSpinBox, "spinValue").setValue(1)   
-                                item_widget.findChild(QtWidgets.QTextEdit, "textEdit").setPlainText("Item Name")
+                                item_widget.findChild(QtWidgets.QTextEdit, "textEdit").setPlainText(f"Item Name {i + 1}")
         except Exception as e:
                 print(e)  
     def solveProblem(self):
         self.groupBox.setVisible(True)
+        self.algorithm.list_item = self.getItemsFromListWidget()
         try:  
                 # Setup
                 crossover_rate = 0.9
@@ -130,13 +156,14 @@ class Ui_UIKnapsack(object):
 
                         # Gán quần thể mới từ quần thể sau khi đột biến
                         populations = mutation_Populations
-
+                        
                 # In ra cá thể tốt nhất cuối cùng
                 print("\nBest Solution found:")
                 self.algorithm.print_BestSolution(best_solution,self.list_Items,max_weight)
                 result = self.algorithm.print_BestSolution(best_solution,self.list_Items,max_weight)
                 
                 item_info = result['ItemsSelected']
+                self.listResult.clear()
                 for data in item_info:  # Lặp qua các giá trị trong từ điển
                         # Tạo một instance của Ui_Result
                         newResult = Ui_Result()
@@ -154,6 +181,15 @@ class Ui_UIKnapsack(object):
                         listWidgetItem.setSizeHint(QtCore.QSize(534, 113))
                         self.listResult.addItem(listWidgetItem)
                         self.listResult.setItemWidget(listWidgetItem, result_widget)
+                if(self.listResult.count() == 0):
+                        notFound = Ui_NotFound()
+                        notFound_widget = QtWidgets.QWidget()
+                        notFound.setupUi(notFound_widget)
+                        # Thêm widget vào QListWidget
+                        listWidgetItem = QtWidgets.QListWidgetItem()
+                        listWidgetItem.setSizeHint(QtCore.QSize(534, 284))
+                        self.listResult.addItem(listWidgetItem)
+                        self.listResult.setItemWidget(listWidgetItem, notFound_widget)
         
         except Exception as e:
                 print(e)

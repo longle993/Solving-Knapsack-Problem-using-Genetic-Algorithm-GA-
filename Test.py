@@ -11,7 +11,6 @@ algorithm = Algorithm(Algorithm.generateItem(size), Algorithm.generate_Value(siz
 list_Items = algorithm.combine_Dictionary()
 print("List Items:")
 print(list_Items)
-
 # Step 2: Tạo quần thể
 size_population = 20 
 populations = algorithm.create_population(size_population)
