@@ -403,8 +403,8 @@ QPushButton#btnFinish:pressed {
      <rect>
       <x>150</x>
       <y>80</y>
-      <width>551</width>
-      <height>301</height>
+      <width>561</width>
+      <height>321</height>
      </rect>
     </property>
     <property name="font">
@@ -431,7 +431,7 @@ QPushButton#btnFinish:pressed {
 </string>
     </property>
     <property name="title">
-     <string>Step 2: Enter the item quantity</string>
+     <string>Step 2: Define some parameters</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignHCenter|Qt::AlignTop</set>
@@ -442,8 +442,8 @@ QPushButton#btnFinish:pressed {
     <widget class="QPushButton" name="btnNextStep3">
      <property name="geometry">
       <rect>
-       <x>280</x>
-       <y>190</y>
+       <x>290</x>
+       <y>240</y>
        <width>131</width>
        <height>51</height>
       </rect>
@@ -491,8 +491,8 @@ QPushButton#btnNextStep3:pressed {
     <widget class="QPushButton" name="btnBackStep1">
      <property name="geometry">
       <rect>
-       <x>120</x>
-       <y>190</y>
+       <x>130</x>
+       <y>240</y>
        <width>131</width>
        <height>51</height>
       </rect>
@@ -540,22 +540,76 @@ QPushButton#btnBackStep1:pressed {
     <widget class="QSpinBox" name="spinQuantity">
      <property name="geometry">
       <rect>
-       <x>190</x>
-       <y>90</y>
-       <width>131</width>
+       <x>290</x>
+       <y>80</y>
+       <width>81</width>
        <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Segoe UI</family>
-       <pointsize>14</pointsize>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>90</y>
+       <width>81</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Quantity:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>160</y>
+       <width>81</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Weight:</string>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="spinTotalWeight">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>160</y>
+       <width>81</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>12</pointsize>
       </font>
      </property>
     </widget>
    </widget>
-   <zorder>grNumberItems</zorder>
    <zorder>grSelection</zorder>
+   <zorder>grNumberItems</zorder>
    <zorder>grCreateItemsAuto</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">

@@ -54,7 +54,6 @@ class Algorithm:
     def evaluate_Fitness(self, list_Items, individual, max_weight):
         total_Value = 0
         total_Weight = 0
-        
         for i in range(len(individual)):
             if individual[i] == 1: 
                 item = self.list_item[i]  # Lấy tên item từ self.list_item
